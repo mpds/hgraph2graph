@@ -1,16 +1,18 @@
+import argparse
+import math
+import random
+import sys
+
+import numpy as np
+import rdkit
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
 from torch.utils.data import DataLoader
-
-import math, random, sys
-import numpy as np
-import argparse
 from tqdm import tqdm
 
 from hgraph import *
-import rdkit
 
 lg = rdkit.RDLogger.logger() 
 lg.setLevel(rdkit.RDLogger.CRITICAL)
@@ -21,7 +23,7 @@ parser.add_argument('--atom_vocab', default=common_atom_vocab)
 parser.add_argument('--model', required=True)
 
 parser.add_argument('--seed', type=int, default=7)
-parser.add_argument('--nsample', type=int, default=10000)
+parser.add_argument('--nsamples', type=int, default=10000)
 
 parser.add_argument('--rnn_type', type=str, default='LSTM')
 parser.add_argument('--hidden_size', type=int, default=250)
@@ -48,7 +50,7 @@ torch.manual_seed(args.seed)
 random.seed(args.seed)
 
 with torch.no_grad():
-    for _ in tqdm(range(args.nsample // args.batch_size)):
+    for _ in tqdm(range(args.nsamples // args.batch_size)):
         smiles_list = model.sample(args.batch_size, greedy=True)
         for _,smiles in enumerate(smiles_list):
             print(smiles)
